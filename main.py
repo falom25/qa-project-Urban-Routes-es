@@ -45,6 +45,7 @@ class UrbanRoutesPage:
     phone_number_label = (By.CSS_SELECTOR, "label[for='phone']")
     phone_number_input = (By.CSS_SELECTOR, "input#phone")
     next_button = (By.CSS_SELECTOR, "button.button.full")
+    phone_number_display = (By.XPATH, "//div[@class='np-text' and text()='+1 123 123 12 12']")
 # Codigo de telefono
     code_label = (By.CSS_SELECTOR, "label[for='code']")
     code_input = (By.CSS_SELECTOR, "input#code")
@@ -63,8 +64,10 @@ class UrbanRoutesPage:
 # Helados
     ice_cream_plus_button = (By.XPATH,
                              "//div[@class='r-counter-label' and text()='Helado']/following-sibling::div[@class='r-counter']//div[@class='counter-plus']")
+    ice_cream_counter = (By.XPATH, "//div[@class='r-counter-label' and text()='Helado']/following-sibling::div[@class='r-counter']//div[contains(@class, 'counter-value')]")
 # Manta y panuelos
     blanket_and_tissues_switch = (By.CSS_SELECTOR, "div.switch")
+    blanket_and_tissues_checkbox = (By.CSS_SELECTOR, "div.switch input.switch-input")
 # Pedir taxi e informacion
     request_taxi_button = (By.XPATH, "//button[@type='button' and .//span[text()='Pedir un taxi']]")
     order_popup = (
@@ -201,33 +204,58 @@ class TestUrbanRoutes:
         routes_page = UrbanRoutesPage(self.driver)
         phone_number = data.phone_number
         routes_page.add_phone_number(phone_number)
+        # Validar que el número de teléfono ingresado es el mismo que en data.py
+        current_value = self.driver.find_element(*routes_page.phone_number_input).get_attribute("value")
+        assert current_value == phone_number
 
     def test_add_phone_code(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.add_phone_code()
+        phone_number = data.phone_number
+        # Validar que el número de teléfono haya sido agregado en la interfaz después del proceso de confirmación
+        displayed_phone_number = self.driver.find_element(*routes_page.phone_number_display).text
+        assert displayed_phone_number == phone_number, f"Esperado: {phone_number}, Actual: {displayed_phone_number}"
 
     def test_add_credit_card(self):
         routes_page = UrbanRoutesPage(self.driver)
         card_number = data.card_number
         cvv = data.card_code
         routes_page.add_credit_card(card_number, cvv)
+        # Verificar que la tarjeta fue agregada correctamente
+        payment_method_card_label = (By.XPATH, '//div[@class="pp-value-text" and text()="Tarjeta"]')
+        wait = WebDriverWait(self.driver, 10)
+        payment_method_card_element = wait.until(EC.visibility_of_element_located(payment_method_card_label))
+        assert payment_method_card_element.is_displayed()
 
     def test_message_to_driver(self):
         routes_page = UrbanRoutesPage(self.driver)
         message_for_driver = data.message_for_driver
         routes_page.message_to_driver(message_for_driver)
+        # Validar el campo mensaje para el conductor
+        displayed_message = self.driver.find_element(*routes_page.message_to_driver_field).get_attribute("value")
+        assert displayed_message == message_for_driver
 
     def test_order_ice_creams(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.order_ice_creams()
+        # Verificar que la cantidad de helados en el contador es 2
+        ice_cream_counter_element = self.driver.find_element(*routes_page.ice_cream_counter)
+        counter_value = ice_cream_counter_element.text
+        assert counter_value == "2"
 
     def test_blanket_and_tissues_switch(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.order_blanket_and_tissues()
+        # Verificar el estado del checkbox después de hacer clic
+        checkbox_element = self.driver.find_element(*routes_page.blanket_and_tissues_checkbox)
+        return checkbox_element.is_selected()
 
     def test_request_taxi(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.request_taxi()
+        # Verificar que la información del conductor es visible
+        driver_info_element = self.driver.find_element(*routes_page.driver_info)
+        assert driver_info_element.is_displayed()
 
     @classmethod
     def teardown_class(cls):
