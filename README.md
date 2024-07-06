@@ -47,36 +47,31 @@ Este proyecto tiene como objetivo automatizar pruebas utilizando Selenium para u
 Este README proporciona una guía básica para entender el proyecto y ejecutar las pruebas de forma efectiva utilizando Selenium WebDriver y Python.
 
 
-## Nota sobre las pruebas
+## Video de las pruebas 
 
-En mi entorno, todas las pruebas son positivas. Sin embargo, he notado que al no utilizar `time.sleep`, las pruebas a menudo generan errores. Incluso durante los ejercicios de la lección, las soluciones que utilizan `WebDriverWait` generalmente producían errores a menos que se depuraran o se utilizara `time.sleep`. En mi proyecto ocurre lo mismo. Intenté usar esperas implícitas y explícitas, pero seguían generando errores o necesitaban adicionalmente un `time.sleep`.
-
-Además, si cambio los localizadores por selectores más sencillos, no encuentran el elemento. 
-
-Por esta razón, he mantenido el uso de `time.sleep` y localizadores específicos para asegurar que las pruebas se ejecuten correctamente en mi entorno.
+https://drive.google.com/file/d/1GLWljlb8xchlMo3qqaagd1Cuulq2XNMN/view?usp=sharing
 
 ## Resultados de las pruebas
 
 A continuación, se presentan los resultados de la ejecución de las pruebas en mi entorno:
 
-/Users/falom/PycharmProjects/my_first_python_project/pythonProject/venv/bin/python /Applications/PyCharm CE.app/Contents/plugins/python-ce/helpers/pycharm/_jb_pytest_runner.py --path /Users/falom/projects/qa-project-Urban-Routes-es/test_case.py
-Testing started at 4:22 PM ...
-Launching pytest with arguments /Users/falom/projects/qa-project-Urban-Routes-es/test_case.py --no-header --no-summary -q in /Users/falom/projects/qa-project-Urban-Routes-es
+/Users/falom/PycharmProjects/my_first_python_project/pythonProject/venv/bin/python /Applications/PyCharm CE.app/Contents/plugins/python-ce/helpers/pycharm/_jb_pytest_runner.py --path /Users/falom/projects/qa-project-Urban-Routes-es/main.py 
+Testing started at 8:41 PM ...
+Launching pytest with arguments /Users/falom/projects/qa-project-Urban-Routes-es/main.py --no-header --no-summary -q in /Users/falom/projects/qa-project-Urban-Routes-es
 
 ============================= test session starts ==============================
 collecting ... collected 9 items
 
-test_case.py::TestUrbanRoutes::test_set_route
-test_case.py::TestUrbanRoutes::test_open_taxi_modal_and_select_comfort
-test_case.py::TestUrbanRoutes::test_add_phone_number
-test_case.py::TestUrbanRoutes::test_add_phone_code
-test_case.py::TestUrbanRoutes::test_add_credit_card
-test_case.py::TestUrbanRoutes::test_message_to_driver
-test_case.py::TestUrbanRoutes::test_order_ice_creams
-test_case.py::TestUrbanRoutes::test_blanket_and_tissues_switch
-test_case.py::TestUrbanRoutes::test_request_taxi
+main.py::TestUrbanRoutes::test_set_route 
+main.py::TestUrbanRoutes::test_open_taxi_modal_and_select_comfort 
+main.py::TestUrbanRoutes::test_add_phone_number 
+main.py::TestUrbanRoutes::test_add_phone_code 
+main.py::TestUrbanRoutes::test_add_credit_card 
+main.py::TestUrbanRoutes::test_message_to_driver 
+main.py::TestUrbanRoutes::test_order_ice_creams 
+main.py::TestUrbanRoutes::test_blanket_and_tissues_switch 
+main.py::TestUrbanRoutes::test_request_taxi 
 
-=================== 9 passed, 1 warning in 78.74s (0:01:18) ====================
-PASSED [ 11%]PASSED [ 22%]PASSED [ 33%]PASSED [ 44%]PASSED [ 55%]PASSED [ 66%]PASSED [ 77%]PASSED [ 88%]PASSED [100%]
+=================== 9 passed, 1 warning in 66.06s (0:01:06) ====================
+PASSED                          [ 11%]PASSED [ 22%]PASSED                   [ 33%]PASSED                     [ 44%]PASSED                    [ 55%]PASSED                  [ 66%]PASSED                   [ 77%]PASSED         [ 88%]PASSED                       [100%]
 Process finished with exit code 0
-

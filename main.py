@@ -58,6 +58,7 @@ class UrbanRoutesPage:
     outside_click_area = (By.CSS_SELECTOR, "div.plc")
     add_card_button = (By.XPATH, '//button[@type="submit" and @class="button full" and text()="Agregar"]')
     close_button_payment_method = (By.XPATH, '//*[@id="root"]/div/div[2]/div[2]/div[1]/button')
+    payment_method_card_label = (By.XPATH, '//div[@class="pp-value-text" and text()="Tarjeta"]')
 # Mensaje para el conductor
     label_for_comment = (By.CSS_SELECTOR, 'label[for="comment"].label')
     message_to_driver_field = (By.ID, "comment")
@@ -83,39 +84,38 @@ class UrbanRoutesPage:
         self.driver.find_element(*self.to_field).send_keys(to_address)
 
     def open_taxi_modal(self):
-        self.driver.find_element(*self.ask_for_taxi_button).click()
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.ask_for_taxi_button)).click()
+        time.sleep(1)
 
     def select_comfort_rate(self):
-        self.driver.find_element(*self.comfort_rate_button).click()
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.comfort_rate_button)).click()
+        time.sleep(1)
 
     def add_phone_number(self, phone_number):
-        self.driver.find_element(*self.phone_number_area).click()
-        time.sleep(2)
-        self.driver.find_element(*self.phone_number_label).click()
-        time.sleep(2)
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.phone_number_area)).click()
+        wait.until(EC.element_to_be_clickable(self.phone_number_label)).click()
         self.driver.find_element(*self.phone_number_input).send_keys(phone_number)
-        time.sleep(2)
-        self.driver.find_element(*self.next_button).click()
+        wait.until(EC.element_to_be_clickable(self.next_button)).click()
         time.sleep(2)
 
     def add_phone_code(self):
-        self.driver.find_element(*self.code_label).click()
-        time.sleep(2)
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.code_label)).click()
         self.driver.find_element(*self.code_input).send_keys(retrieve_phone_code(self.driver))
-        time.sleep(2)
-        self.driver.find_element(*self.submit_button).click()
+        wait.until(EC.element_to_be_clickable(self.submit_button)).click()
         time.sleep(2)
 
     def add_credit_card(self, card_number, cvv):
-        self.driver.find_element(*self.payment_method_button).click()
-        time.sleep(2)
-        self.driver.find_element(*self.add_credit_card_button).click()
-        time.sleep(2)
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.payment_method_button)).click()
+        wait.until(EC.element_to_be_clickable(self.add_credit_card_button)).click()
 
         credit_card_field = self.driver.find_element(*self.credit_card_number_field)
         credit_card_field.click()
         credit_card_field.send_keys(card_number)
-        time.sleep(2)
 
         cvv_field = self.driver.find_element(*self.cvv_field)
         cvv_field.click()
@@ -123,48 +123,46 @@ class UrbanRoutesPage:
         time.sleep(2)
 
         self.driver.find_element(*self.outside_click_area).click()
-        time.sleep(2)
         self.driver.find_element(*self.add_card_button).click()
-        time.sleep(2)
         self.driver.find_element(*self.close_button_payment_method).click()
         time.sleep(2)
+
+    def verify_credit_card_added(self):
+        wait = WebDriverWait(self.driver, 10)
+        payment_method_card_element = wait.until(EC.visibility_of_element_located(self.payment_method_card_label))
+        return payment_method_card_element.is_displayed()
 
     def message_to_driver(self, message):
         label_field = self.driver.find_element(*self.label_for_comment)
         self.driver.execute_script("arguments[0].scrollIntoView(true);", label_field)
         WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.label_for_comment))
         label_field.click()
-        time.sleep(2)
         message_field = self.driver.find_element(*self.message_to_driver_field)
-        time.sleep(2)
         message_field.send_keys(message)
         time.sleep(2)
 
     def order_ice_creams(self):
-        ice_cream_button = self.driver.find_element(*self.ice_cream_plus_button)
-        ice_cream_button.click()
-        time.sleep(2)
-        ice_cream_button.click()
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.ice_cream_plus_button)).click()
+        wait.until(EC.element_to_be_clickable(self.ice_cream_plus_button)).click()
         time.sleep(2)
 
     def order_blanket_and_tissues(self):
-        self.driver.find_element(*self.blanket_and_tissues_switch).click()
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.blanket_and_tissues_switch)).click()
         time.sleep(2)
 
     def request_taxi(self):
         self.driver.find_element(*self.request_taxi_button).click()
-        time.sleep(5)
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located(self.order_popup)
-        )
-        time.sleep(5)
-        WebDriverWait(self.driver, 30).until(
-            EC.visibility_of_element_located(self.driver_info)
-        )
-        time.sleep(5)
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.order_popup))
+        WebDriverWait(self.driver, 40).until(EC.visibility_of_element_located(self.driver_info))
+        time.sleep(2)
 
     def wait_for_driver_info_modal(self):
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.driver_info_modal))
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located(self.driver_info_modal))
+        time.sleep(2)
 
 # Pruebas
 class TestUrbanRoutes:
@@ -195,16 +193,13 @@ class TestUrbanRoutes:
     def test_open_taxi_modal_and_select_comfort(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.open_taxi_modal()
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(routes_page.comfort_rate_button))
-        time.sleep(1)
         routes_page.select_comfort_rate()
-        time.sleep(1)
 
     def test_add_phone_number(self):
         routes_page = UrbanRoutesPage(self.driver)
         phone_number = data.phone_number
         routes_page.add_phone_number(phone_number)
-        # Validar que el número de teléfono ingresado es el mismo que en data.py
+        # Validacion
         current_value = self.driver.find_element(*routes_page.phone_number_input).get_attribute("value")
         assert current_value == phone_number
 
@@ -212,7 +207,7 @@ class TestUrbanRoutes:
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.add_phone_code()
         phone_number = data.phone_number
-        # Validar que el número de teléfono haya sido agregado en la interfaz después del proceso de confirmación
+        # Validacion
         displayed_phone_number = self.driver.find_element(*routes_page.phone_number_display).text
         assert displayed_phone_number == phone_number, f"Esperado: {phone_number}, Actual: {displayed_phone_number}"
 
@@ -221,24 +216,21 @@ class TestUrbanRoutes:
         card_number = data.card_number
         cvv = data.card_code
         routes_page.add_credit_card(card_number, cvv)
-        # Verificar que la tarjeta fue agregada correctamente
-        payment_method_card_label = (By.XPATH, '//div[@class="pp-value-text" and text()="Tarjeta"]')
-        wait = WebDriverWait(self.driver, 10)
-        payment_method_card_element = wait.until(EC.visibility_of_element_located(payment_method_card_label))
-        assert payment_method_card_element.is_displayed()
+        # Validacion
+        assert routes_page.verify_credit_card_added()
 
     def test_message_to_driver(self):
         routes_page = UrbanRoutesPage(self.driver)
         message_for_driver = data.message_for_driver
         routes_page.message_to_driver(message_for_driver)
-        # Validar el campo mensaje para el conductor
+        # Validacion
         displayed_message = self.driver.find_element(*routes_page.message_to_driver_field).get_attribute("value")
         assert displayed_message == message_for_driver
 
     def test_order_ice_creams(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.order_ice_creams()
-        # Verificar que la cantidad de helados en el contador es 2
+        # Validacion
         ice_cream_counter_element = self.driver.find_element(*routes_page.ice_cream_counter)
         counter_value = ice_cream_counter_element.text
         assert counter_value == "2"
@@ -246,14 +238,14 @@ class TestUrbanRoutes:
     def test_blanket_and_tissues_switch(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.order_blanket_and_tissues()
-        # Verificar el estado del checkbox después de hacer clic
+        # Validacion
         checkbox_element = self.driver.find_element(*routes_page.blanket_and_tissues_checkbox)
         return checkbox_element.is_selected()
 
     def test_request_taxi(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.request_taxi()
-        # Verificar que la información del conductor es visible
+        # Verificacion
         driver_info_element = self.driver.find_element(*routes_page.driver_info)
         assert driver_info_element.is_displayed()
 
